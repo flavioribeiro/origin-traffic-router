@@ -11,6 +11,7 @@ import (
 
 type TrafficRouter struct {
 	AvailableOrigins []string `envconfig:"AVAILABLE_ORIGINS"`
+	HTTPPort         string   `envconfig:"HTTP_PORT"`
 	CurrentOrigin    string
 }
 
@@ -42,5 +43,5 @@ func main() {
 		log.Fatalln(err)
 	}
 	http.Handle("/", &tr)
-	http.ListenAndServe(":8080", nil)
+	http.ListenAndServe(":"+tr.HTTPPort, nil)
 }
