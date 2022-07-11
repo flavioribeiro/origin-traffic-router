@@ -31,6 +31,8 @@ func (tr *TrafficRouter) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			panic(err)
 		} else {
+			defer resp.Body.Close()
+			copyHeader(w.Header(), resp.Header)
 			w.WriteHeader(resp.StatusCode)
 			io.Copy(w, resp.Body)
 		}
@@ -44,4 +46,12 @@ func main() {
 	}
 	http.Handle("/", &tr)
 	http.ListenAndServe(":"+tr.HTTPPort, nil)
+}
+
+func copyHeader(dst, src http.Header) {
+	for k, vv := range src {
+		for _, v := range vv {
+			dst.Add(k, v)
+		}
+	}
 }
