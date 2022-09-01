@@ -25,6 +25,9 @@ func (tr *TrafficRouter) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			tr.CurrentOrigin = tr.AvailableOrigins[0]
 		}
 		return
+	} else if strings.Contains(r.URL.Path, "/origin") {
+		w.WriteHeader(http.StatusOK)
+		io.Copy(w, strings.NewReader(tr.CurrentOrigin))
 	} else {
 		log.Println("redirecting to ", tr.CurrentOrigin+r.URL.Path)
 		resp, err := http.Get(tr.CurrentOrigin + r.URL.Path)
